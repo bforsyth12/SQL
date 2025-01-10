@@ -1,0 +1,51 @@
+For this project, I am querying data from several tables to quantify customer and order metrics.
+
+--1. How many orders were placed in January?
+SELECT Count(orderID)
+FROM BIT_DB.JanSales
+WHERE length(orderID)=6
+AND orderID<>'Order ID';
+
+--2. How many of those order were for an iPhone?
+SELECT COUNT(orderID)
+FROM BIT_DB.JanSales
+WHERE Product='iPhone'
+AND length(orderid)=6
+AND orderid<>'Order ID';
+
+--3. Select the customer account numbers for all the orders that were placed in February
+SELECT distinct acctnum 
+FROM BIT_DB.customers cust
+INNER JOIN BIT_DB.FebSales Feb
+ON cust.order_id=Feb.orderID
+WHERE LENGTH(orderid)=6
+AND orderid<>'Order ID';
+
+--4. Which product was the cheapest one sold in January and what was the price?
+SELECT distinct product, min(price)
+FROM BIT_DB.JanSales
+GROUP BY product, price 
+ORDER BY price ASC LIMIT 1;
+
+--5. What is the total revenue for each product sold in January?
+SELECT sum(quantity)*price as Revenue, product
+FROM BIT_DB.JanSales
+GROUP BY product;
+
+--6. Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many of each were sold, and what was the total revenue?
+SELECT SUM(quantity)
+, SUM(quantity)*price as Revenue
+, product
+FROM BIT_DB.FebSales
+WHERE location='548 Lincoln St, Seattle, WA 98101'
+GROUP BY product;
+
+--7. How many customers ordered more than 2 times in February, and what was the average amount spent for those customers?
+SELECT COUNT(distinct customers.acctnum), ROUND(AVG(FebSales.quantity*price),2) AS average_price 
+FROM BIT_DB.customers
+LEFT JOIN BIT_DB.FebSales
+ON customers.order_id=FebSales.orderID
+WHERE Quantity>2
+AND length (orderid)=6
+AND orderid<>'OrderID';
+
