@@ -1,0 +1,105 @@
+For this project I imported the Spotify data into a table and used it to perform SQL analyses that would provide insight into music preferences.
+
+#Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+I inserted the Spotify data into the table and conducted the following queries:
+
+--Arrange artist and track from most popular to least popular.
+SELECT popularity,artist_name, track_name
+FROM BIT_DB.Spotifydata
+DESC;
+
+--What is the average danceability by artist and track?
+SELECT ROUND(AVG(danceability),3)
+, artist_name
+,track_name
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY ROUND(AVG(danceability),3) DESC;
+
+--Who are the top ten artists based on popularity?
+SELECT artist_name
+, popularity
+FROM BIT_DB.Spotifydata
+ORDER BY popularity DESC Limit 10;
+
+--What artist released the longest song?
+SELECT artist_name
+, track_name
+, duration_ms
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms DESC LIMIT 1;
+
+--What's the average dandeability for the 10 most popular songs?
+SELECT danceability
+, popularity
+, artist_name
+, track_name
+FROM BIT_DB.Spotifydata
+ORDER BY popularity DESC LIMIT 10;
+
+--Which songs have the highest instrumentalness and popularity?
+SELECT instrumentalness
+, artist_name
+, track_name
+, popularity
+FROM BIT_DB.Spotifydata
+WHERE instrumentalness >.00009
+AND popularity>=85;
+
+--What is the range of popularity from highest to lowest?
+SELECT MIN(popularity)
+, MAX(popularity)
+FROM BIT_DB.Spotifydata;
+
+--What are the 3 least popular songs?
+SELECT popularity
+, artist_name
+, track_name
+FROM BIT_DB.Spotifydata
+ORDER BY popularity LIMIT 3;
+
+--What are the 3 most popular songs?
+SELECT popularity
+, artist_name
+, track_name
+FROM BIT_DB.Spotifydata
+ORDER BY popularity DESC LIMIT 3;
+
+--Which songs are by Olivia Rodrigo?
+SELECT artist_name
+, track_name
+FROM BIT_DB.Spotifydata
+WHERE artist_name LIKE 'Olivia Rodrigo'; 
+
+--How many artists have songs in the Spotify data?
+SELECT COUNT(DISTINCT artist_name)
+FROM BIT_DB.Spotifydata;
+
+--How many songs do each of the artists have in the Spotify data?
+SELECT DISTINCT artist_name
+, COUNT(track_name) as Number_of_songs
+FROM BIT_DB.Spotifydata
+WHERE track_name>1
+GROUP BY artist_name
+ORDER BY Number_of_songs DESC;
