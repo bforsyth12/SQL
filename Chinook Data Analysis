@@ -152,3 +152,30 @@ WHERE emp.Title='Sales Support Agent'
 AND inv.InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31'
 GROUP BY emp.LastName,emp.FirstName
 ORDER BY 'Total Sales' DESC;
+
+--How many purchases were made from each genre?
+SELECT gen.Name AS Genre, SUM(invit.Quantity) AS Total_Purchases 
+FROM chinook.genres AS gen
+JOIN chinook.tracks as t
+ON gen.GenreId=t.GenreId
+JOIN chinook.invoice_items AS invit
+ON t.TrackId=invit.TrackId
+GROUP BY gen.Name
+ORDER BY Total_Purchases DESC;
+
+--Which song has the longest title?
+SELECT Title,
+LENGTH(Title)
+FROM chinook.albums
+ORDER BY Length(Title) DESC
+LIMIT 1;
+
+--What is the most popular media type?
+SELECT mt.Name AS Media_Type, SUM(invit.Quantity) AS Total_Purchases
+FROM chinook.media_types AS mt
+JOIN chinook.tracks AS t
+ON mt.MediaTypeId=t.MediaTypeId
+JOIN chinook.invoice_items AS invit
+ON t.TrackId=invit.TrackId
+GROUP BY mt.Name
+ORDER BY Total_Purchases DESC;
